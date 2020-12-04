@@ -37,12 +37,21 @@ def _build_teams(players):
         
 
 
-def _good_build_teams(players):
+def _good_build_teams(players, bad_pairs):
     average_score = sum([x[1] for x in players]) / len(players)
     team_size = len(players) / NUM_OF_TEAMS
     ideal_team_score = average_score * team_size
     while True:
         teams = _build_teams(players)
+        bad_team = False
+        for pair in bad_pairs:
+            pair = set(pair)
+            for team in teams:
+                just_players = {p[0] for p in team}
+                if pair.issubset(just_players):
+                    bad_team = True
+        if bad_team:
+            continue
         sort_teams(teams)
         score_difference = calc_team_score(teams[NUM_OF_TEAMS-1]) - calc_team_score(teams[0])
         if score_difference < MAX_SCORE_DIFF:
@@ -53,10 +62,10 @@ def _good_build_teams(players):
  
  
  
-def show_team_options(players, options=3):
+def show_team_options(players, options=3, bad_pairs=[]):
     for i in range(options):
         print("Option {}:\n".format(i + 1))
-        good_teams = _good_build_teams(players)
+        good_teams = _good_build_teams(players, bad_pairs)
         for i in range(len(good_teams)):
             print("Team {}: {}".format(i+1, calc_team_score(good_teams[i])))
             for player in good_teams[i]:
