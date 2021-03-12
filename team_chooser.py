@@ -1,7 +1,7 @@
 import random
 
 NUM_OF_TEAMS = 3
-MAX_SCORE_DIFF = 10
+MAX_SCORE_DIFF = 12
 
 def calc_team_score(team):
     return sum([x[1] for x in team])
@@ -37,7 +37,7 @@ def _build_teams(players):
         
 
 
-def _good_build_teams(players, bad_pairs):
+def good_build_teams(players, bad_pairs):
     average_score = sum([x[1] for x in players]) / len(players)
     team_size = len(players) / NUM_OF_TEAMS
     ideal_team_score = average_score * team_size
@@ -55,9 +55,6 @@ def _good_build_teams(players, bad_pairs):
         sort_teams(teams)
         score_difference = calc_team_score(teams[NUM_OF_TEAMS-1]) - calc_team_score(teams[0])
         if score_difference < MAX_SCORE_DIFF:
-            #print("Ideal score: {}".format(ideal_team_score))
-            #for i in range(len(teams)):
-            #    print("Team{}: {}".format(i, calc_team_score(teams[i])))
             return teams
  
  
@@ -65,13 +62,14 @@ def _good_build_teams(players, bad_pairs):
 def show_team_options(players, options=3, bad_pairs=[]):
     for i in range(options):
         print("Option {}:\n".format(i + 1))
-        good_teams = _good_build_teams(players, bad_pairs)
+        good_teams = good_build_teams(players, bad_pairs)
         for i in range(len(good_teams)):
             print("Team {}: {}".format(i+1, calc_team_score(good_teams[i])))
             for player in good_teams[i]:
                 print(player[0])
             print("")
         print("------------------")
+    
     
     
     
