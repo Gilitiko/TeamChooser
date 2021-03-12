@@ -20,13 +20,34 @@ def parse_players(players_text):
         players.append((name, score))
     return players
 
-def calc_teams(players_text, goalkeepers_text, output_widget):
+
+def parse_seperations(seperations_text):
+    lines = seperations_text.splitlines()
+    groups = []
+    g = []
+    for l in lines:
+        if l:
+            g.append(l)
+        else:
+            groups.append(g)
+            g = []
+            
+    if g:
+        groups.append(g)
+        
+    bad_pairs = []
+    for g in groups:
+        if len(g) > 3:
+            showerror(title="Error", message=f"Seperation group size cant be above 3, {g}")
+            raise Exception()
+        bad_pairs += list(itertools.combinations(g, 2))
+    
+    return bad_pairs
+        
+
+def calc_teams(players_text, seperations_text, output_widget):
     players = parse_players(players_text)
-    goalkeepers = goalkeepers_text.splitlines()
-    if len(goalkeepers) > 3:
-        showerror(message="Cant have more than 3 goalkeepers")
-        return
-    bad_pairs = list(itertools.combinations(goalkeepers, 2))
+    bad_pairs = parse_seperations(seperations_text)
     good_teams = good_build_teams(players, bad_pairs)
     output_widget.delete(1.0, "end")
     for i in range(len(good_teams)):
@@ -52,7 +73,7 @@ def main():
     txt.grid(column=0, row=1, pady=10, padx=10)
     txt.focus()
     
-    lbl2 = Label(window, text="Goalkeepers:")
+    lbl2 = Label(window, text="Seperations:")
 
     lbl2.grid(column=0, row=2)
 
